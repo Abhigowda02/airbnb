@@ -113,7 +113,8 @@ exports.getPropertyById = async (req, res) => {
 
 exports.createProperty = async (req, res) => {
   try {
-    const property = await Property.create(req.body);
+    const propertyData = { ...req.body, host: req.user.id };
+    const property = await Property.create(propertyData);
     res.status(201).json(property);
   } catch (error) {
     res.status(400).json({ message: error.message });

@@ -43,6 +43,48 @@ app.get("/", (req, res) => {
   res.send("Airbnb backend running 🚀");
 });
 
+// Debug endpoint to check database integrity
+app.get("/api/debug/users", async (req, res) => {
+  try {
+    const User = require("./models/User");
+    const users = await User.find().select("_id name email role isHost");
+    res.json({ 
+      count: users.length, 
+      users 
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+app.get("/api/debug/bookings", async (req, res) => {
+  try {
+    const Booking = require("./models/Booking");
+    const bookings = await Booking.find()
+      .populate("user", "name email")
+      .populate("property", "title location price");
+    res.json({ 
+      count: bookings.length, 
+      bookings 
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+app.get("/api/debug/properties", async (req, res) => {
+  try {
+    const Property = require("./models/Property");
+    const properties = await Property.find().limit(5).populate("host", "name email");
+    res.json({ 
+      count: await Property.countDocuments(), 
+      sample: properties 
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
 // Global error handler
 app.use((err, req, res, next) => {
   console.error(err.stack);

@@ -83,10 +83,11 @@ const SearchBar = () => {
             <label className="block text-sm font-semibold mb-2">Min Price (₹)</label>
             <input
               type="number"
+              min ="0"
               placeholder="Min price"
               value={minPrice}
               onChange={(e) => setMinPrice(e.target.value)}
-              className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-red-500"
+              className="w-full p-2 border border-gray-300 rounded text-black focus:outline-none focus:ring-2 focus:ring-red-500"
             />
           </div>
 
@@ -94,10 +95,11 @@ const SearchBar = () => {
             <label className="block text-sm font-semibold mb-2">Max Price (₹)</label>
             <input
               type="number"
+              min ="0"
               placeholder="Max price"
               value={maxPrice}
               onChange={(e) => setMaxPrice(e.target.value)}
-              className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-red-500"
+              className="w-full p-2 border border-gray-300 rounded text-black focus:outline-none focus:ring-2 focus:ring-red-500"
             />
           </div>
 
@@ -105,10 +107,11 @@ const SearchBar = () => {
             <label className="block text-sm font-semibold mb-2">Min Guests</label>
             <input
               type="number"
+              min ="0"
               placeholder="Number of guests"
               value={maxGuests}
               onChange={(e) => setMaxGuests(e.target.value)}
-              className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-red-500"
+              className="w-full p-2 border border-gray-300 rounded text-black focus:outline-none focus:ring-2 focus:ring-red-500"
             />
           </div>
 

@@ -2,6 +2,8 @@ const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const fs = require("fs");
 const Property = require("./models/Property");
+const User = require("./models/User");
+const Booking = require("./models/Booking");
 
 dotenv.config();
 
@@ -44,6 +46,51 @@ const seedData = async () => {
     // 5. Bulk Insert
     await Property.insertMany(cleanedData);
     console.log(`Successfully seeded ${cleanedData.length} properties! 🚀`);
+
+    // 6. Seed users
+    await User.deleteMany();
+    console.log("Existing users cleared.");
+
+    const users = await User.insertMany([
+      { name: "John Doe", email: "john@example.com", password: "password123", role: "user" },
+      { name: "Jane Host", email: "jane@example.com", password: "password123", isHost: true, role: "host", hostDescription: "Experienced host" },
+      { name: "Alice User", email: "alice@example.com", password: "password123" }
+    ]);
+    console.log(`Successfully seeded ${users.length} users! 👥`);
+
+    // 7. Assign host to some properties
+    const host = users.find(u => u.isHost);
+    const someProperties = await Property.find().limit(3);
+    await Property.updateMany({ _id: { $in: someProperties.map(p => p._id) } }, { host: host._id });
+    console.log("Assigned host to properties! 🏠");
+
+    // 8. Seed bookings
+    await Booking.deleteMany();
+    console.log("Existing bookings cleared.");
+
+    const user1 = users.find(u => u.email === "john@example.com");
+    const user2 = users.find(u => u.email === "alice@example.com");
+    const properties = await Property.find().limit(2);
+
+    const bookings = await Booking.insertMany([
+      {
+        user: user1._id,
+        property: properties[0]._id,
+        fromDate: new Date("2026-03-10"),
+        toDate: new Date("2026-03-15"),
+        guests: 2,
+        totalPrice: properties[0].price * 5
+      },
+      {
+        user: user2._id,
+        property: properties[1]._id,
+        fromDate: new Date("2026-03-20"),
+        toDate: new Date("2026-03-22"),
+        guests: 1,
+        totalPrice: properties[1].price * 2
+      }
+    ]);
+    console.log(`Successfully seeded ${bookings.length} bookings! 📅`);
     
     process.exit();
   } catch (error) {

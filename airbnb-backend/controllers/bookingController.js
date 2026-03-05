@@ -71,7 +71,8 @@ exports.createBooking = async (req, res) => {
 exports.getUserBookings = async (req, res) => {
   try {
     const bookings = await Booking.find({ user: req.user.id })
-      .populate("property", "title location price images");
+      .populate("property", "title location price images")
+      .populate("user", "name email");
 
     res.json(bookings);
   } catch (error) {
@@ -104,6 +105,29 @@ exports.cancelBooking = async (req, res) => {
     booking.status = "cancelled";
     await booking.save();
     res.json(booking);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// @desc    Get bookings for host's properties
+// @route   GET /api/bookings/host
+exports.getHostBookings = async (req, res) => {
+  try {
+    if (!req.user.isHost) {
+      return res.status(403).json({ message: "Only hosts can view property bookings" });
+    }
+
+    // Find properties owned by the host
+    const properties = await Property.find({ host: req.user.id }).select('_id');
+    const propertyIds = properties.map(p => p._id);
+
+    // Find bookings for those properties
+    const bookings = await Booking.find({ property: { $in: propertyIds } })
+      .populate('property', 'title location price images')
+      .populate('user', 'name email'); // Populate user details
+
+    res.json(bookings);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

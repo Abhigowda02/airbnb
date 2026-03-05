@@ -2,8 +2,8 @@ const User = require("../models/User");
 const jwt = require("jsonwebtoken");
 
 // Generate JWT
-const generateToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET, {
+const generateToken = (userId) => {
+  return jwt.sign({ id: userId.toString() }, process.env.JWT_SECRET, {
     expiresIn: "7d",
   });
 };
@@ -29,6 +29,8 @@ exports.register = async (req, res) => {
       email: user.email,
       role: user.role,
       isHost: user.isHost,
+      hostDescription: user.hostDescription,
+      profilePhoto: user.profilePhoto,
       token: generateToken(user._id),
     });
 
@@ -60,6 +62,8 @@ exports.login = async (req, res) => {
       email: user.email,
       role: user.role,
       isHost: user.isHost,
+      hostDescription: user.hostDescription,
+      profilePhoto: user.profilePhoto,
       token: generateToken(user._id),
     });
 
@@ -75,6 +79,10 @@ exports.becomeHost = async (req, res) => {
     const { hostDescription } = req.body;
     const userId = req.user.id;
 
+    if (!userId) {
+      return res.status(400).json({ message: "User ID not found in token" });
+    }
+
     const user = await User.findByIdAndUpdate(
       userId,
       { 
@@ -85,6 +93,10 @@ exports.becomeHost = async (req, res) => {
       { new: true }
     );
 
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
     res.json({
       _id: user._id,
       name: user.name,
@@ -92,6 +104,7 @@ exports.becomeHost = async (req, res) => {
       role: user.role,
       isHost: user.isHost,
       hostDescription: user.hostDescription,
+      profilePhoto: user.profilePhoto,
       message: "You are now a host!"
     });
 

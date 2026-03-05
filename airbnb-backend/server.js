@@ -38,6 +38,10 @@ app.use("/api/auth", require("./routes/authRoutes"));
 app.use("/api/properties", require("./routes/propertyRoutes"));
 app.use("/api/bookings", require("./routes/bookingRoutes"));
 
+app.get('/',(req,res)=>{
+  res.send("Welcome to Backend")
+})
+
 // Health check
 app.get("/", (req, res) => {
   res.send("Airbnb backend running 🚀");

@@ -44,7 +44,7 @@ app.get('/',(req,res)=>{
 
 // Health check
 app.get("/", (req, res) => {
-  res.send("Airbnb backend running 🚀");
+  res.send("Airbnb backend running ");
 });
 
 // Debug endpoint to check database integrity
@@ -100,5 +100,5 @@ app.use((err, req, res, next) => {
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () =>
-  console.log(`✅ Server running on port ${PORT}`)
+  console.log(` Server running on port ${PORT}`)
 );

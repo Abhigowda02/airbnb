@@ -12,14 +12,14 @@ connectDB();
 const mongoose = require("mongoose");
 
 mongoose.connection.once("open", async () => {
-  console.log("🔎 Connected DB name:", mongoose.connection.db.databaseName);
+  console.log(" Connected DB name:", mongoose.connection.db.databaseName);
 
   const collections = await mongoose.connection.db
     .listCollections()
     .toArray();
 
   console.log(
-    "📂 Collections in this DB:",
+    "Collections in this DB:",
     collections.map((c) => c.name)
   );
 });
